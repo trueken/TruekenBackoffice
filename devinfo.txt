@@ -1,0 +1,17 @@
+#python: 3.6
+#django: 2.0.2
+
+#virtualenv
+
+#arrancar django
+cd /home/juane/.virtualenvs/djangodev
+source bin/activate
+cd /home/juane/devel/django/trueken
+python manage.py runserver
+
+#testrpc
+testrpc -m "put recycle please music manual hip north clock bread pipe mouse welcome"
+
+#arrancar react
+cd /var/www/html/eclipse/trueken_reactjs/
+npm start
