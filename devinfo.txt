@@ -15,3 +15,7 @@ testrpc -m "put recycle please music manual hip north clock bread pipe mouse wel
 #arrancar react
 cd /var/www/html/eclipse/trueken_reactjs/
 npm start
+
+#truffle
+cd /var/www/html/eclipse/trueken/truffle/
+truffle migrate

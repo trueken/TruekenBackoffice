@@ -2,7 +2,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from trades.models import Contract, Trade
 from django.utils.translation import gettext as _
-from django.core import serializers
 
 def index(request):
     return HttpResponse(_("Estás en la API, por favor ejecuta un método concreto."))
@@ -11,11 +10,12 @@ def index(request):
 summary of all the contracts already registered
 '''
 def contracts(request):
-    contracts = Contract.objects.all().values();#.filter();
+    #TODO filtrar por V validated
+    contracts = Contract.objects.filter(status='V').values();#.filter();
     aContracts = [];
     for contract in contracts:
         aContracts.append(contract);
-    return JsonResponse({"contracts": aContracts})
+    return responder({"contracts": aContracts})
 
 '''
 contract detail containing some statistics about its trades
@@ -28,9 +28,7 @@ def contract(request, address):
         "max": oTrades["max"],
         "avg": oTrades["avg"],
     };
-    response = JsonResponse(oContract);
-    response['Access-Control-Allow-Origin'] = "*";
-    return response;
+    return responder(oContract);
 
 def trim_trailing(value):
     s = str(value);
@@ -43,7 +41,7 @@ and some statistics among them
 def trades(request, address):
     contract = get_object_or_404(Contract, address=address)
             
-    return JsonResponse(get_trades(contract), content_type="application/json");
+    return responder(get_trades(contract));
     #trades =Trade.objects.filter(address=address).values();
 '''
 
@@ -51,7 +49,7 @@ def trades(request, address):
 @return: object with the trades 
 '''   
 def get_trades(contract):
-    trades = contract.trade_set.all().values();
+    trades = contract.trade_set.all().order_by('price').values();
     aTrades = [];
     minPrice = 0;
     maxPrice = 0;
@@ -74,3 +72,8 @@ def get_trades(contract):
         "max": trim_trailing(maxPrice),
         "avg": trim_trailing(total/count)
     }
+
+def responder (json):
+    response = JsonResponse(json);
+    response['Access-Control-Allow-Origin'] = "*";
+    return response;
